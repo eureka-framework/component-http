@@ -14,7 +14,7 @@
 
   "autoload": {
     "psr-4": {
-      "Eureka\\Component\\Http\\": "./"
+      "Eureka\\Component\\Http\\": "./src/Http/"
     }
   }
 

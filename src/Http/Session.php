@@ -13,39 +13,32 @@ namespace Eureka\Component\Http;
  * $_SESSION data wrapper class.
  *
  * @author Romain Cottard
- * @version 2.1.0
  */
 class Session extends Data
 {
     /**
-     * Current class instance.
-     *
-     * @var Data $instance
+     * @var Data $instance Current class instance.
      */
     protected static $instance = null;
 
     /**
-     * Session index name for ephemeral var in Session.
-     * @var    string  EPHEMERAL
+     *
+     * @var string EPHEMERAL Session index name for ephemeral var in Session.
      */
     const EPHEMERAL = 'eka-ephemeral';
 
     /**
-     * Session index name for ephemeral var if active or not.
-     * @var    string  ACTIVE
+     * @var string ACTIVE Session index name for ephemeral var if active or not.
      */
     const ACTIVE = 'active';
 
     /**
-     * Session index name for ephemeral var content.
-     * @var    string  VARIABLE
+     * @var string VARIABLE Session index name for ephemeral var content.
      */
     const VARIABLE = 'var';
 
     /**
      * Session constructor.
-     *
-     * @return Session Current instance
      */
     protected function __construct()
     {
@@ -57,8 +50,8 @@ class Session extends Data
     /**
      * Get Session ephemeral variable specified.
      *
-     * @param    string $name
-     * @return   mixed  Variable value.
+     * @param  string $name
+     * @return mixed  Variable value.
      */
     public function getEphemeral($name)
     {
@@ -73,8 +66,8 @@ class Session extends Data
     /**
      * Check if have specified ephemeral var in Session.
      *
-     * @param    string $name Index Session name.
-     * @return   boolean
+     * @param  string $name Index Session name.
+     * @return bool
      */
     public function hasEphemeral($name)
     {
@@ -86,11 +79,12 @@ class Session extends Data
     /**
      * Set value in session.
      *
-     * @param string $name
-     * @param mixed  $value
-     * @return $this
+     * @param  string $name
+     * @param  mixed  $value
+     * @return self
      */
-    public function set($name, $value) {
+    public function set($name, $value)
+    {
         parent::set($name, $value);
 
         $_SESSION[$name] = $value;
@@ -99,9 +93,9 @@ class Session extends Data
     }
 
     /**
-     * Initialize Session. Remove old ephemerals var in Session.
+     * Initialize Session. Remove old ephemeral var in Session.
      *
-     * @return   $this
+     * @return self
      */
     public function clearEphemeral()
     {
@@ -128,18 +122,17 @@ class Session extends Data
     /**
      * Set ephemeral variable in Session.
      *
-     * @param    string $name
-     * @param    mixed  $value
-     * @return   $this
+     * @param  string $name
+     * @param  mixed  $value
+     * @return self
      */
     public function setEphemeral($name, $value)
     {
-        $ephemeral                           = static::get(static::EPHEMERAL);
+        $ephemeral                          = static::get(static::EPHEMERAL);
         $ephemeral[$name][static::ACTIVE]   = true;
         $ephemeral[$name][static::VARIABLE] = $value;
         $this->set(static::EPHEMERAL, $ephemeral);
 
         return $this;
     }
-
 }

@@ -13,14 +13,11 @@ namespace Eureka\Component\Http;
  * $_GET data wrapper class.
  *
  * @author Romain Cottard
- * @version 2.1.0
  */
 class File extends Data
 {
     /**
-     * Current class instance.
-     *
-     * @var Data $instance
+     * @var Data $instance Current class instance.
      */
     protected static $instance = null;
 
@@ -31,8 +28,6 @@ class File extends Data
 
     /**
      * File constructor.
-     *
-     * @return File Current instance
      */
     protected function __construct()
     {
@@ -41,8 +36,9 @@ class File extends Data
 
     /**
      * Use name as default in File's methods.
+     *
      * @param  string $name
-     * @return $this
+     * @return self
      * @throws \Exception
      */
     public function useName($name)
@@ -73,11 +69,11 @@ class File extends Data
     /**
      * Move uploaded file.
      *
-     * @param    string $toDir
-     * @param    string $fileName
-     * @param    int    $mode Right mode on directory to create (if not exists)
-     * @return   boolean
-     * @throws   \Exception
+     * @param  string $toDir
+     * @param  string $fileName
+     * @param  int    $mode Right mode on directory to create (if not exists)
+     * @return bool
+     * @throws \Exception
      */
     public function move($toDir, $fileName = null, $mode = 0775)
     {
@@ -86,10 +82,9 @@ class File extends Data
         }
 
         $fileName = (empty($fileName) ? $this->get('name') : $fileName);
-        if (!file_exists($toDir)) {
-            if (!mkdir($toDir, $mode, true)) {
-                throw new \Exception(__METHOD__ . '|Cannot create directory "' . $toDir . '" !', 1000);
-            }
+
+        if (!file_exists($toDir) && !mkdir($toDir, $mode, true)) {
+            throw new \Exception(__METHOD__ . '|Cannot create directory "' . $toDir . '" !', 1000);
         }
 
         return move_uploaded_file($this->get('tmp_name'), $toDir . $fileName);

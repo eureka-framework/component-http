@@ -13,22 +13,16 @@ namespace Eureka\Component\Http;
  * $_COOKIE wrapper class.
  *
  * @author Romain Cottard
- * @version 2.1.0
  */
 class Cookie extends Data
 {
-
     /**
-     * Server instance
-     *
-     * @var Server $server
+     * @var Server $server Server instance
      */
     protected $server = null;
 
     /**
      * Cookie constructor.
-     *
-     * @return Cookie
      */
     protected function __construct()
     {
@@ -38,29 +32,28 @@ class Cookie extends Data
     /**
      * Get cookie information.
      *
-     * @param    string $name
-     * @param    mixed  $default
-     * @return   mixed   Cookie data.
+     * @param  string $name
+     * @param  mixed  $default
+     * @return mixed   Cookie data.
      */
     public function get($name, $default = null)
     {
-        return unserialize(parent::get($name, $default));
+        return json_decode(parent::get($name, $default));
     }
 
     /**
      * Set cookie information.
      *
-     * @param    string  $name Cookie Name
-     * @param    mixed   $value Cookie Value
-     * @param    integer $time Cookie Lifetime.
-     * @return   void
+     * @param  string $name Cookie Name
+     * @param  mixed  $value Cookie Value
+     * @param  int    $time Cookie Lifetime.
+     * @return void
      */
     public function set($name, $value = null, $time = 2592000)
     {
-        $value = serialize($value);
+        $value = json_encode($value);
         parent::set($name, $value);
 
         setcookie($name, $value, time() + $time, '/', $this->server->get('name'));
     }
-
 }

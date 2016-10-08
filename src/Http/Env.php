@@ -13,25 +13,19 @@ namespace Eureka\Component\Http;
  * $_ENV wrapper class.
  *
  * @author Romain Cottard
- * @version 2.1.0
  */
 class Env extends Data
 {
     /**
-     * Current class instance.
-     *
-     * @var Data $instance
+     * @var Data $instance Current class instance.
      */
     protected static $instance = null;
 
     /**
      * Env constructor.
-     *
-     * @return Env Current instance
      */
     protected function __construct()
     {
         $this->data = $_ENV;
     }
-
 }

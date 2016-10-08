@@ -13,25 +13,19 @@ namespace Eureka\Component\Http;
  * $_POST wrapper class.
  *
  * @author Romain Cottard
- * @version 2.1.0
  */
 class Post extends Data
 {
     /**
-     * Current class instance.
-     *
-     * @var Data $instance
+     * @var Data $instance Current class instance.
      */
     protected static $instance = null;
 
     /**
      * Post constructor.
-     *
-     * @return Post Current instance
      */
     protected function __construct()
     {
         $this->data = $_POST;
     }
-
 }

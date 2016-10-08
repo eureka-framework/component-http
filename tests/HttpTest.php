@@ -9,29 +9,27 @@
 
 namespace Eureka\Component\Http;
 
-require_once __DIR__.'/../Http.php';
-require_once __DIR__.'/../Data.php';
-require_once __DIR__.'/../Server.php';
+require_once __DIR__ . '/../src/Http/Http.php';
+require_once __DIR__ . '/../src/Http/Data.php';
+require_once __DIR__ . '/../src/Http/Server.php';
 
 /**
  * Class Test for cache
  *
  * @author Romain Cottard
- * @version 2.1.0
  */
 class HttpTest extends \PHPUnit_Framework_TestCase
 {
-
     /**
      * Test Http class
      *
-     * @return   void
+     * @return void
      * @covers Http::__construct
      * @covers Http::init
      */
     public function testHttp()
     {
-        $http  = new Http('http://eureka-framework.com/phpunit/test?query=1&other[]=val1&other[]=val2#frag');
+        $http = new Http('http://eureka-framework.com/phpunit/test?query=1&other[]=val1&other[]=val2#frag');
 
         $query = $http->query(true);
 

@@ -9,27 +9,23 @@
 
 namespace Eureka\Component\Http;
 
-require_once __DIR__.'/../Data.php';
-require_once __DIR__.'/../Env.php';
-require_once __DIR__.'/../Server.php';
-
-require_once __DIR__.'/../../Debug/Debug.php';
+require_once __DIR__ . '/../src/Http/Data.php';
+require_once __DIR__ . '/../src/Http/Env.php';
+require_once __DIR__ . '/../src/Http/Server.php';
 
 /**
  * Class Test for cache
  *
  * @author Romain Cottard
- * @version 2.1.0
  */
 class DataTest extends \PHPUnit_Framework_TestCase
 {
-
     /**
      * Test Server / Data class
      *
      * @return   void
      * @covers Data::getInstance
-     * @covers Server::__construc
+     * @covers Server::__construct
      * @covers Server::getBaseUri
      * @covers Server::getCurrentUri
      * @covers Server::init

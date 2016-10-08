@@ -13,21 +13,16 @@ namespace Eureka\Component\Http;
  * Cookies wrapper class.
  *
  * @author Romain Cottard
- * @version 2.1.0
  */
 abstract class Data
 {
     /**
-     * Cookies data
-     *
-     * @var array $data
+     * @var array $data $_{VARNAME} data.
      */
     protected $data = array();
 
     /**
      * Data constructor.
-     *
-     * @return Data Current instance
      */
     abstract protected function __construct();
 
@@ -36,10 +31,11 @@ abstract class Data
      *
      * @return Server|Env|Cookie|File|Get|Post|Session
      */
-    public static function getInstance() {
+    public static function getInstance()
+    {
 
         if (null === static::$instance) {
-            $className = get_called_class();
+            $className        = get_called_class();
             static::$instance = new $className();
         }
 
@@ -49,10 +45,10 @@ abstract class Data
     /**
      * Get request data.
      *
-     * @param    string $name
-     * @param    mixed  $default
-     * @return   mixed   Value
-     * @throws   \Exception
+     * @param  string $name
+     * @param  mixed  $default
+     * @return mixed   Value
+     * @throws \Exception
      */
     public function get($name = null, $default = null)
     {
@@ -74,8 +70,8 @@ abstract class Data
     /**
      * Check if request information exists
      *
-     * @param    string $name
-     * @return   boolean
+     * @param  string $name
+     * @return bool
      */
     public function has($name)
     {
@@ -85,9 +81,9 @@ abstract class Data
     /**
      * Get request information.
      *
-     * @param    string $name
-     * @param    mixed  $value
-     * @return   Post
+     * @param  string $name
+     * @param  mixed  $value
+     * @return static
      */
     public function set($name, $value)
     {
@@ -95,5 +91,4 @@ abstract class Data
 
         return $this;
     }
-
 }

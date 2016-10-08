@@ -13,21 +13,16 @@ namespace Eureka\Component\Http;
  * $_SERVER wrapper class.
  *
  * @author Romain Cottard
- * @version 2.1.0
  */
 class Server extends Data
 {
     /**
-     * Current class instance.
-     *
-     * @var Data $instance
+     * @var Data $instance Current class instance.
      */
     protected static $instance = null;
 
     /**
      * Server constructor.
-     *
-     * @return Server Current instance
      */
     protected function __construct()
     {
@@ -39,7 +34,7 @@ class Server extends Data
     /**
      * Get current base Uri
      *
-     * @return   string  Current base uri.
+     * @return string Current base uri.
      */
     public function getBaseUri()
     {
@@ -58,8 +53,8 @@ class Server extends Data
     /**
      * Get current uri.
      *
-     * @param    boolean $absolute
-     * @return   string  Current uri.
+     * @param  bool $absolute
+     * @return string
      */
     public function getCurrentUri($absolute = true)
     {
@@ -71,9 +66,9 @@ class Server extends Data
     }
 
     /**
-     * Initialize Request datas.
+     * Initialize Request data.
      *
-     * @return   void
+     * @return void
      */
     public function init()
     {
@@ -89,9 +84,6 @@ class Server extends Data
         $this->data['is_get']   = (isset($_SERVER['REQUEST_METHOD']) ? 'GET' == $_SERVER['REQUEST_METHOD'] : false);
         $this->data['is_ajax']  = (isset($_SERVER['HTTP_X_REQUESTED_WITH']) ? true : false);
 
-        /*if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-            $this->data['ip'] = $_SERVER['HTTP_X_FORWARDED_FOR'];
-        } else*/
         if (isset($_SERVER['REMOTE_ADDR'])) {
             $this->data['ip'] = $_SERVER['REMOTE_ADDR'];
         } else {
@@ -100,9 +92,9 @@ class Server extends Data
     }
 
     /**
-     * @desc     If method is GET.
+     * If method is GET.
      *
-     * @return   boolean
+     * @return bool
      */
     public function isGet()
     {
@@ -112,7 +104,7 @@ class Server extends Data
     /**
      * If method is POST.
      *
-     * @return   boolean
+     * @return bool
      */
     public function isPost()
     {
@@ -122,7 +114,7 @@ class Server extends Data
     /**
      * If method is AJAX.
      *
-     * @return   boolean
+     * @return bool
      */
     public function isAjax()
     {
@@ -132,10 +124,10 @@ class Server extends Data
     /**
      * Redirect on specified url.
      *
-     * @param    string  $url
-     * @param    integer $status
-     * @return   void
-     * @throws  \Exception
+     * @param  string $url
+     * @param  int    $status
+     * @return void
+     * @throws \Exception
      */
     public function redirect($url, $status = 301)
     {
@@ -147,10 +139,8 @@ class Server extends Data
             header('Status: ' . $status . ' Redirect');
             header('Location: ' . $url);
             exit(0);
-
         } else {
             throw new \Exception('Url is empty !');
         }
     }
-
 }

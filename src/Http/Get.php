@@ -13,25 +13,19 @@ namespace Eureka\Component\Http;
  * $_GET data wrapper class.
  *
  * @author Romain Cottard
- * @version 2.1.0
  */
 class Get extends Data
 {
     /**
-     * Current class instance.
-     *
-     * @var Data $instance
+     * @var Data $instance Current class instance.
      */
     protected static $instance = null;
 
     /**
      * Get constructor.
-     *
-     * @return Get Current instance
      */
     protected function __construct()
     {
-        $this->data   = $_GET;
+        $this->data = $_GET;
     }
-
 }

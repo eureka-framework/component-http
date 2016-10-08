@@ -13,14 +13,11 @@ namespace Eureka\Component\Http;
  * Class to manipulate http query
  *
  * @author Romain Cottard
- * @version 2.1.0
  */
 class Http
 {
     /**
-     * Url data
-     *
-     * @var array $url
+     * @var array $url Url data
      */
     protected $url = array();
 
@@ -28,7 +25,6 @@ class Http
      * Class constructor.
      *
      * @param    string $url Url to parse. If null, get current url.
-     * @return   Http
      */
     public function __construct($url = null)
     {
@@ -38,9 +34,9 @@ class Http
     /**
      * Add, replace or remove parameters from query url.
      *
-     * @param    mixed $name Array of parameter, or parameter name.
-     * @param    mixed $value Null if first parameter is array, else parameter value.
-     * @return   Http  Current instance.
+     * @param  mixed $name Array of parameter, or parameter name.
+     * @param  mixed $value Null if first parameter is array, else parameter value.
+     * @return self
      */
     public function add($name, $value = null)
     {
@@ -49,7 +45,6 @@ class Http
         }
 
         $params = (!is_array($name) ? array($name => $value) : $name);
-
 
         $query = $this->query(true);
 
@@ -70,12 +65,12 @@ class Http
     /**
      * Initialize object properties.
      *
-     * @param    string $url Url to parse. If null, get current url.
-     * @return   object  Current instance.
+     * @param  string $url Url to parse. If null, get current url.
+     * @return self
      */
     public function init($url = null)
     {
-        $url = (empty($url) ? Server::getInstance()->getCurrentUri() : $url);
+        $url       = (empty($url) ? Server::getInstance()->getCurrentUri() : $url);
         $this->url = parse_url($url);
 
         return $this;
@@ -84,8 +79,8 @@ class Http
     /**
      * Return query url.
      *
-     * @param    boolean $array If return array or string
-     * @return   mixed   Query Url
+     * @param  bool $array If return array or string
+     * @return mixed   Query Url
      */
     public function query($array = false)
     {
@@ -103,10 +98,10 @@ class Http
     /**
      * Add or replace path
      *
-     * @param    string $path
-     * @param    string $type
-     * @param    string $replace
-     * @return   Http
+     * @param  string $path
+     * @param  string $type
+     * @param  string $replace
+     * @return self
      */
     public function setPath($path, $type = 'replace', $replace = '')
     {
@@ -122,7 +117,7 @@ class Http
             case 'replace':
             default:
                 $path = str_replace($replace, $path, $oldPath);
-            // empty
+                break;
         }
 
         $this->url['path'] = $path;
@@ -131,9 +126,9 @@ class Http
     }
 
     /**
-     * Get formated uri.
+     * Get formatted uri.
      *
-     * @return   string  Current uri.
+     * @return string Current uri.
      */
     public function uri()
     {
@@ -147,5 +142,4 @@ class Http
 
         return $uri;
     }
-
 }
