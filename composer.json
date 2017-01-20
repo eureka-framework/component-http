@@ -16,6 +16,9 @@
     "psr-4": {
       "Eureka\\Component\\Http\\": "./src/Http/"
     }
-  }
+  },
 
+  "require": {
+    "psr/http-message": "^1.0.1"
+  }
 }
