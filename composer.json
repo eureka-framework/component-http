@@ -19,6 +19,8 @@
   },
 
   "require": {
-    "psr/http-message": "^1.0.1"
+    "psr/http-message": "^1.0",
+    "eureka/component-psr": "^1.0",
+    "eureka/interface-bag": "^1.0"
   }
 }

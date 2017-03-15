@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright (c) 2010-2016 Romain Cottard
+ * Copyright (c) 2010-2017 Romain Cottard
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -24,7 +24,7 @@ use Psr\Http\Message\StreamInterface;
  * message and return an instance that contains the changed state.
  *
  *
- * @author  Romain Cottard <rco@deezer.com>
+ * @author  Romain Cottard
  * @link    http://www.php-fig.org/psr/psr-7/
  * @see http://www.ietf.org/rfc/rfc7230.txt
  * @see http://www.ietf.org/rfc/rfc7231.txt

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright (c) 2010-2016 Romain Cottard
+ * Copyright (c) 2010-2017 Romain Cottard
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -16,7 +16,7 @@ use Psr\Http\Message\UriInterface;
 /**
  * Class Request implements PSR-7 RequestInterface.
  *
- * @author  Romain Cottard <rco@deezer.com>
+ * @author  Romain Cottard
  * @link    http://www.php-fig.org/psr/psr-7/
  */
 class ServerRequest extends Request implements ServerRequestInterface
@@ -197,6 +197,9 @@ class ServerRequest extends Request implements ServerRequestInterface
         return $instance;
     }
 
+    /**
+     * @return ServerRequestInterface
+     */
     public static function createFromGlobal()
     {
         $method  = isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : 'GET';
@@ -256,12 +259,12 @@ class ServerRequest extends Request implements ServerRequestInterface
     /**
      * Set Parsed body.
      *
-     * @param  array $parserBody
+     * @param  array $parsedBody
      * @return self
      */
-    private function setParsedBody(array $parserBody = [])
+    private function setParsedBody(array $parsedBody = [])
     {
-        $this->parsedBody = $parserBody;
+        $this->parsedBody = $parsedBody;
 
         return $this;
     }

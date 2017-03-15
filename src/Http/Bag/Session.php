@@ -7,25 +7,25 @@
  * file that was distributed with this source code.
  */
 
-namespace Eureka\Component\Http;
+namespace Eureka\Component\Http\Bag;
+
+use Eureka\Interfaces\Bag\BagInterface;
+use Eureka\Interfaces\Bag\BagTrait;
 
 /**
  * $_SESSION data wrapper class.
  *
  * @author Romain Cottard
  */
-class Session extends Data
+class Session implements BagInterface
 {
-    /**
-     * @var Data $instance Current class instance.
-     */
-    protected static $instance = null;
+    use BagTrait;
 
     /**
      *
      * @var string EPHEMERAL Session index name for ephemeral var in Session.
      */
-    const EPHEMERAL = 'eka-ephemeral';
+    const EPHEMERAL = 'eureka-ephemeral';
 
     /**
      * @var string ACTIVE Session index name for ephemeral var if active or not.
@@ -38,13 +38,33 @@ class Session extends Data
     const VARIABLE = 'var';
 
     /**
+     * @var Data $instance Current class instance.
+     */
+    protected static $instance = null;
+
+
+    /**
      * Session constructor.
      */
-    protected function __construct()
+    private function __construct()
     {
-        $this->data = $_SESSION;
+        $this->bag = &$_SESSION;
 
         $this->clearEphemeral();
+    }
+
+    /**
+     * Singleton pattern method.
+     *
+     * @return self
+     */
+    public static function getInstance()
+    {
+        if (null === static::$instance) {
+            static::$instance = new self();
+        }
+
+        return static::$instance;
     }
 
     /**
@@ -55,9 +75,9 @@ class Session extends Data
      */
     public function getEphemeral($name)
     {
-        $ephemeral = $this->get(static::EPHEMERAL);
-        if (isset($ephemeral[$name][static::VARIABLE])) {
-            return $ephemeral[$name][static::VARIABLE];
+        $ephemeral = $this->get(self::EPHEMERAL);
+        if (isset($ephemeral[$name][self::VARIABLE])) {
+            return $ephemeral[$name][self::VARIABLE];
         } else {
             return null;
         }
@@ -71,25 +91,9 @@ class Session extends Data
      */
     public function hasEphemeral($name)
     {
-        $ephemeral = $this->get(static::EPHEMERAL);
+        $ephemeral = $this->get(self::EPHEMERAL);
 
         return isset($ephemeral[$name]);
-    }
-
-    /**
-     * Set value in session.
-     *
-     * @param  string $name
-     * @param  mixed  $value
-     * @return self
-     */
-    public function set($name, $value)
-    {
-        parent::set($name, $value);
-
-        $_SESSION[$name] = $value;
-
-        return $this;
     }
 
     /**
@@ -99,12 +103,12 @@ class Session extends Data
      */
     public function clearEphemeral()
     {
-        // Check ephemeral vars
-        if ($this->has(static::EPHEMERAL)) {
-            $ephemeral = $this->get(static::EPHEMERAL);
+        //~ Check ephemeral vars
+        if ($this->has(self::EPHEMERAL)) {
+            $ephemeral = $this->get(self::EPHEMERAL);
             foreach ($ephemeral as $name => &$var) {
-                if (true === $var[static::ACTIVE]) {
-                    $var[static::ACTIVE] = false;
+                if (true === $var[self::ACTIVE]) {
+                    $var[self::ACTIVE] = false;
                 } else {
                     unset($ephemeral[$name]);
                 }
@@ -113,8 +117,8 @@ class Session extends Data
             $ephemeral = array();
         }
 
-        // Save in Session.
-        $this->set(static::EPHEMERAL, $ephemeral);
+        //~ Save in Session.
+        $this->set(self::EPHEMERAL, $ephemeral);
 
         return $this;
     }
@@ -128,10 +132,10 @@ class Session extends Data
      */
     public function setEphemeral($name, $value)
     {
-        $ephemeral                          = static::get(static::EPHEMERAL);
-        $ephemeral[$name][static::ACTIVE]   = true;
-        $ephemeral[$name][static::VARIABLE] = $value;
-        $this->set(static::EPHEMERAL, $ephemeral);
+        $ephemeral                        = $this->get(self::EPHEMERAL);
+        $ephemeral[$name][self::ACTIVE]   = true;
+        $ephemeral[$name][self::VARIABLE] = $value;
+        $this->set(self::EPHEMERAL, $ephemeral);
 
         return $this;
     }
