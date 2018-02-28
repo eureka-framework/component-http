@@ -9,11 +9,17 @@
 
 namespace Eureka\Component\Http\Server;
 
-use Psr\Http\Message\ResponseInterface;
 use Eureka\Psr\Http\Server\RequestHandlerInterface;
 use Eureka\Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
+/**
+ * Class RequestHandler
+ *
+ * @author Romain Cottard
+ * @todo use real psr-15 when switch to PHP 7.1 will be effective
+ */
 class RequestHandler implements RequestHandlerInterface
 {
     /** @var \SplObjectStorage $storage */
@@ -54,7 +60,7 @@ class RequestHandler implements RequestHandlerInterface
 
     /**
      * @param \Eureka\Psr\Http\Server\MiddlewareInterface $middleware
-     * @return RequestHandlerInterface
+     * @return \Eureka\Psr\Http\Server\RequestHandlerInterface
      */
     public function withMiddleware(MiddlewareInterface $middleware)
     {
@@ -66,7 +72,7 @@ class RequestHandler implements RequestHandlerInterface
 
     /**
      * @param \Eureka\Psr\Http\Server\MiddlewareInterface $middleware
-     * @return RequestHandlerInterface
+     * @return \Eureka\Psr\Http\Server\RequestHandlerInterface
      */
     public function withoutMiddleware(MiddlewareInterface $middleware)
     {
@@ -78,7 +84,10 @@ class RequestHandler implements RequestHandlerInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Process request through a middleware & return response.
+     *
+     * @param \Psr\Http\Message\ServerRequestInterface $request
+     * @return \Psr\Http\Message\ResponseInterface
      */
     protected function process(ServerRequestInterface $request)
     {
@@ -95,7 +104,7 @@ class RequestHandler implements RequestHandlerInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Clone current instance & sub-instance.
      */
     public function __clone()
     {
