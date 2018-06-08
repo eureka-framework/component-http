@@ -211,10 +211,25 @@ class ServerRequest extends Request implements ServerRequestInterface
         $instance = new ServerRequest($method, $uri, $headers, $body, $version, $_SERVER);
         $instance->setCookieParams($_COOKIE)
             ->setQueryParams($_GET)
-            ->setParsedBody($_POST)
+            ->setParsedBody(self::getParsedBodyFromRequest())
             ->setUploadedFiles($_FILES);
 
         return $instance;
+    }
+
+    /**
+     * @return array|bool|mixed|string
+     */
+    private static function getParsedBodyFromRequest()
+    {
+        $requestBody = file_get_contents('php://input', 'r');
+        $parsedBody  = !empty($requestBody) ? json_decode($requestBody, true) : [];
+
+        if (!empty($requestBody) && empty($parsedBody)) {
+            parse_str($requestBody, $parsedBody);
+        }
+
+        return $parsedBody;
     }
 
     /**

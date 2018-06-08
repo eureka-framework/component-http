@@ -1,7 +1,7 @@
 <?php
 
-/**
- * Copyright (c) 2010-2017 Romain Cottard
+/*
+ * Copyright (c) Romain Cottard
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -21,25 +21,16 @@ class Session implements BagInterface
 {
     use BagTrait;
 
-    /**
-     *
-     * @var string EPHEMERAL Session index name for ephemeral var in Session.
-     */
+    /** @var string EPHEMERAL Session index name for ephemeral var in Session. */
     const EPHEMERAL = 'eureka-ephemeral';
 
-    /**
-     * @var string ACTIVE Session index name for ephemeral var if active or not.
-     */
+    /** @var string ACTIVE Session index name for ephemeral var if active or not. */
     const ACTIVE = 'active';
 
-    /**
-     * @var string VARIABLE Session index name for ephemeral var content.
-     */
+    /** @var string VARIABLE Session index name for ephemeral var content. */
     const VARIABLE = 'var';
 
-    /**
-     * @var Data $instance Current class instance.
-     */
+    /** @var \Eureka\Component\Http\Bag\Session $instance Current class instance. */
     protected static $instance = null;
 
 
@@ -56,7 +47,7 @@ class Session implements BagInterface
     /**
      * Singleton pattern method.
      *
-     * @return self
+     * @return \Eureka\Component\Http\Bag\Session
      */
     public static function getInstance()
     {
@@ -99,7 +90,7 @@ class Session implements BagInterface
     /**
      * Initialize Session. Remove old ephemeral var in Session.
      *
-     * @return self
+     * @return $this
      */
     public function clearEphemeral()
     {
@@ -128,7 +119,7 @@ class Session implements BagInterface
      *
      * @param  string $name
      * @param  mixed  $value
-     * @return self
+     * @return $this
      */
     public function setEphemeral($name, $value)
     {
