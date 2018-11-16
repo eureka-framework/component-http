@@ -7,39 +7,36 @@
  * file that was distributed with this source code.
  */
 
-namespace Eureka\Component\Http\Bag;
-
-use Eureka\Interfaces\Bag\BagInterface;
-use Eureka\Interfaces\Bag\BagTrait;
+namespace Eureka\Component\Http\Session;
 
 /**
  * $_SESSION data wrapper class.
  *
  * @author Romain Cottard
  */
-class Session implements BagInterface
+class Session
 {
-    use BagTrait;
-
     /** @var string EPHEMERAL Session index name for ephemeral var in Session. */
-    const EPHEMERAL = 'eureka-ephemeral';
+    private const EPHEMERAL = '_ephemeral';
 
     /** @var string ACTIVE Session index name for ephemeral var if active or not. */
-    const ACTIVE = 'active';
+    private const ACTIVE = 'active';
 
     /** @var string VARIABLE Session index name for ephemeral var content. */
-    const VARIABLE = 'var';
+    private const VARIABLE = 'var';
 
-    /** @var \Eureka\Component\Http\Bag\Session $instance Current class instance. */
+    /** @var Session $instance Current class instance. */
     protected static $instance = null;
 
+    /** @var array $session */
+    protected $session = [];
 
     /**
      * Session constructor.
      */
     private function __construct()
     {
-        $this->bag = &$_SESSION;
+        $this->session = &$_SESSION;
 
         $this->clearEphemeral();
     }
@@ -47,9 +44,9 @@ class Session implements BagInterface
     /**
      * Singleton pattern method.
      *
-     * @return \Eureka\Component\Http\Bag\Session
+     * @return self
      */
-    public static function getInstance()
+    public static function getInstance(): self
     {
         if (null === static::$instance) {
             static::$instance = new self();
@@ -59,19 +56,77 @@ class Session implements BagInterface
     }
 
     /**
+     * If session have given key.
+     *
+     * @param  string
+     * @return bool
+     */
+    public function has(string $key): bool
+    {
+        return array_key_exists($key, $this->session);
+    }
+
+    /**
+     * Get session value.
+     *
+     * @param string|int $key
+     * @param $default
+     * @return mixed|null
+     */
+    public function get(string $key, $default = null)
+    {
+        if (!$this->has($key)) {
+            return $default;
+        }
+
+        return $this->session[$key];
+    }
+
+    /**
+     * Set value for a given key.
+     *
+     * @param  string $key
+     * @param  mixed $value
+     * @return self
+     */
+    public function set(string $key, $value): self
+    {
+        $this->session[$key] = $value;
+
+        return $this;
+    }
+
+    /**
+     * Remove key from bag container.
+     * If key not exists, must throw an BagKeyNotFoundException
+     *
+     * @param  string $key
+     * @return static
+     */
+    public function remove(string $key): self
+    {
+        if ($this->has($key)) {
+            unset($this->session[$key]);
+        }
+
+        return $this;
+    }
+
+    /**
      * Get Session ephemeral variable specified.
      *
-     * @param  string $name
+     * @param string $name
+     * @param mixed $default
      * @return mixed  Variable value.
      */
-    public function getEphemeral($name)
+    public function getEphemeral(string $name, $default = null)
     {
         $ephemeral = $this->get(self::EPHEMERAL);
-        if (isset($ephemeral[$name][self::VARIABLE])) {
-            return $ephemeral[$name][self::VARIABLE];
-        } else {
-            return null;
+        if (!isset($ephemeral[$name][self::VARIABLE]) && !array_key_exists($name, $ephemeral)) {
+            return $default;
         }
+
+        return $ephemeral[$name][self::VARIABLE];
     }
 
     /**
@@ -80,11 +135,11 @@ class Session implements BagInterface
      * @param  string $name Index Session name.
      * @return bool
      */
-    public function hasEphemeral($name)
+    public function hasEphemeral(string $name): bool
     {
         $ephemeral = $this->get(self::EPHEMERAL);
 
-        return isset($ephemeral[$name]);
+        return array_key_exists($name, $ephemeral);
     }
 
     /**
@@ -92,8 +147,10 @@ class Session implements BagInterface
      *
      * @return $this
      */
-    public function clearEphemeral()
+    public function clearEphemeral(): self
     {
+        $ephemeral = [];
+
         //~ Check ephemeral vars
         if ($this->has(self::EPHEMERAL)) {
             $ephemeral = $this->get(self::EPHEMERAL);
@@ -104,8 +161,6 @@ class Session implements BagInterface
                     unset($ephemeral[$name]);
                 }
             }
-        } else {
-            $ephemeral = array();
         }
 
         //~ Save in Session.
@@ -118,10 +173,10 @@ class Session implements BagInterface
      * Set ephemeral variable in Session.
      *
      * @param  string $name
-     * @param  mixed  $value
+     * @param  mixed $value
      * @return $this
      */
-    public function setEphemeral($name, $value)
+    public function setEphemeral(string $name, $value): self
     {
         $ephemeral                        = $this->get(self::EPHEMERAL);
         $ephemeral[$name][self::ACTIVE]   = true;

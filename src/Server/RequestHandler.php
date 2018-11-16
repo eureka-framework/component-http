@@ -9,16 +9,15 @@
 
 namespace Eureka\Component\Http\Server;
 
-use Eureka\Psr\Http\Server\RequestHandlerInterface;
-use Eureka\Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
 /**
  * Class RequestHandler
  *
  * @author Romain Cottard
- * @todo use real psr-15 when switch to PHP 7.1 will be effective
  */
 class RequestHandler implements RequestHandlerInterface
 {
@@ -31,8 +30,8 @@ class RequestHandler implements RequestHandlerInterface
     /**
      * Class constructor.
      *
-     * @param \Psr\Http\Message\ResponseInterface $response
-     * @param \Eureka\Psr\Http\Server\MiddlewareInterface[] $middleware
+     * @param ResponseInterface $response
+     * @param MiddlewareInterface[] $middleware
      */
     public function __construct(ResponseInterface $response, $middleware = [])
     {
@@ -47,9 +46,14 @@ class RequestHandler implements RequestHandlerInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Handles a request and produces a response.
+     *
+     * May call other collaborating code to generate the response.
+     *
+     * @param ServerRequestInterface $request
+     * @return ResponseInterface
      */
-    public function handle(ServerRequestInterface $request)
+    public function handle(ServerRequestInterface $request): ResponseInterface
     {
         if (0 === count($this->storage)) {
             return $this->response;
@@ -59,10 +63,10 @@ class RequestHandler implements RequestHandlerInterface
     }
 
     /**
-     * @param \Eureka\Psr\Http\Server\MiddlewareInterface $middleware
-     * @return \Eureka\Psr\Http\Server\RequestHandlerInterface
+     * @param MiddlewareInterface $middleware
+     * @return self
      */
-    public function withMiddleware(MiddlewareInterface $middleware)
+    public function withMiddleware(MiddlewareInterface $middleware): self
     {
         $handler = clone $this;
         $handler->storage->detach($middleware);
@@ -71,10 +75,10 @@ class RequestHandler implements RequestHandlerInterface
     }
 
     /**
-     * @param \Eureka\Psr\Http\Server\MiddlewareInterface $middleware
-     * @return \Eureka\Psr\Http\Server\RequestHandlerInterface
+     * @param MiddlewareInterface $middleware
+     * @return self
      */
-    public function withoutMiddleware(MiddlewareInterface $middleware)
+    protected function withoutMiddleware(MiddlewareInterface $middleware): self
     {
         $handler = clone $this;
         $handler->storage->detach($middleware);
@@ -86,10 +90,10 @@ class RequestHandler implements RequestHandlerInterface
     /**
      * Process request through a middleware & return response.
      *
-     * @param \Psr\Http\Message\ServerRequestInterface $request
-     * @return \Psr\Http\Message\ResponseInterface
+     * @param ServerRequestInterface $request
+     * @return ResponseInterface
      */
-    protected function process(ServerRequestInterface $request)
+    protected function process(ServerRequestInterface $request): ResponseInterface
     {
         /** @var MiddlewareInterface $middleware */
         $middleware = $this->storage->current();

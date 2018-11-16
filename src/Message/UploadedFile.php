@@ -1,7 +1,7 @@
 <?php
 
-/**
- * Copyright (c) 2010-2017 Romain Cottard
+/*
+ * Copyright (c) Romain Cottard
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -10,6 +10,7 @@
 namespace Eureka\Component\Http\Message;
 
 use Psr\Http\Message\StreamInterface;
+use Psr\Http\Message\UploadedFileInterface;
 
 /**
  * Value object representing a file uploaded through an HTTP request.
@@ -21,55 +22,38 @@ use Psr\Http\Message\StreamInterface;
  *
  * @author Romain Cottard
  */
-class UploadedFile
+class UploadedFile implements UploadedFileInterface
 {
-    /**
-     * @var bool $isValid
-     */
-    private $isValid = false;
-
-    /**
-     * @var bool $isMoved
-     */
+    /** @var bool $isMoved */
     private $isMoved = false;
 
-    /**
-     * @var string $clientFilename
-     */
+    /** @var string $clientFilename */
     private $clientFilename = '';
 
-    /**
-     * @var string $clientMediaType
-     */
+    /** @var string $clientMediaType */
     private $clientMediaType = '';
 
-    /**
-     * @var int $size
-     */
+    /** @var int $size */
     private $size = 0;
 
-    /**
-     * @var int $error
-     */
+    /** @var int $error */
     private $error = 0;
 
-    /**
-     * @var string $filename
-     */
-    private $filename = '';
+    /** @var StreamInterface $stream */
+    private $stream;
 
     /**
      * UploadedFile constructor.
      *
-     * @param string $file
+     * @param StreamInterface $stream
      * @param string $name
-     * @param int    $size
-     * @param string $type mimetype
-     * @param int    $errorCode
+     * @param int $size
+     * @param string $type mime type
+     * @param int $errorCode
      */
-    public function __construct($file, $name, $size, $name, $type, $errorCode)
+    public function __construct(StreamInterface $stream, string $name, int $size, string $type, int $errorCode)
     {
-        $this->setFilename($file);
+        $this->setStream($stream);
         $this->setSize($size);
         $this->setClientMediaType($type);
         $this->setClientFilename($name);
@@ -98,7 +82,7 @@ class UploadedFile
             throw new \RuntimeException('File already moved. Cannot get resource stream for it.');
         }
 
-        return new Stream(Stream::createResourceTemp());
+        return (new HttpFactory())->createStream();
     }
 
     /**
@@ -139,7 +123,13 @@ class UploadedFile
     }
 
     /**
-     * {@inheritdoc}
+     * Retrieve the file size.
+     *
+     * Implementations SHOULD return the value stored in the "size" key of
+     * the file in the $_FILES array if available, as PHP calculates this based
+     * on the actual size transmitted.
+     *
+     * @return int|null The file size in bytes or null if unknown.
      */
     public function getSize()
     {
@@ -147,7 +137,18 @@ class UploadedFile
     }
 
     /**
-     * {@inheritdoc}
+     * Retrieve the error associated with the uploaded file.
+     *
+     * The return value MUST be one of PHP's UPLOAD_ERR_XXX constants.
+     *
+     * If the file was uploaded successfully, this method MUST return
+     * UPLOAD_ERR_OK.
+     *
+     * Implementations SHOULD return the value stored in the "error" key of
+     * the file in the $_FILES array.
+     *
+     * @see http://php.net/manual/en/features.file-upload.errors.php
+     * @return int One of PHP's UPLOAD_ERR_XXX constants.
      */
     public function getError()
     {
@@ -155,7 +156,17 @@ class UploadedFile
     }
 
     /**
-     * {@inheritdoc}
+     * Retrieve the filename sent by the client.
+     *
+     * Do not trust the value returned by this method. A client could send
+     * a malicious filename with the intention to corrupt or hack your
+     * application.
+     *
+     * Implementations SHOULD return the value stored in the "name" key of
+     * the file in the $_FILES array.
+     *
+     * @return string|null The filename sent by the client or null if none
+     *     was provided.
      */
     public function getClientFilename()
     {
@@ -163,22 +174,21 @@ class UploadedFile
     }
 
     /**
-     * {@inheritdoc}
+     * Retrieve the media type sent by the client.
+     *
+     * Do not trust the value returned by this method. A client could send
+     * a malicious media type with the intention to corrupt or hack your
+     * application.
+     *
+     * Implementations SHOULD return the value stored in the "type" key of
+     * the file in the $_FILES array.
+     *
+     * @return string|null The media type sent by the client or null if none
+     *     was provided.
      */
     public function getClientMediaType()
     {
         return $this->clientMediaType;
-    }
-
-    public function createAllFromGlobal()
-    {
-        $files = [];
-        foreach ($_FILES as $index => $data) {
-            foreach ($data as $name)
-            {
-
-            }
-        }
     }
 
     /**
@@ -257,16 +267,12 @@ class UploadedFile
     }
 
     /**
-     * @param  string $filename Temp filename.
+     * @param  StreamInterface $stream
      * @return self
      */
-    private function setFilename($filename)
+    private function setStream(StreamInterface $stream)
     {
-        if (!is_readable($filename)) {
-            throw new \RuntimeException('Uploaded file is not readable !');
-        }
-
-        $this->filename = $filename;
+        $this->stream = $stream;
 
         return $this;
     }
