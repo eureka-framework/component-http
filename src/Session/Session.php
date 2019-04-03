@@ -11,6 +11,7 @@ namespace Eureka\Component\Http\Session;
 
 /**
  * $_SESSION data wrapper class.
+ * Can handle ephemeral session variables.
  *
  * @author Romain Cottard
  */
@@ -25,34 +26,29 @@ class Session
     /** @var string VARIABLE Session index name for ephemeral var content. */
     private const VARIABLE = 'var';
 
-    /** @var Session $instance Current class instance. */
-    protected static $instance = null;
-
     /** @var array $session */
-    protected $session = [];
+    protected static $session = null;
 
     /**
      * Session constructor.
      */
-    private function __construct()
+    public function __construct()
     {
-        $this->session = &$_SESSION;
-
-        $this->clearEphemeral();
+        $this->initialize();
     }
 
     /**
-     * Singleton pattern method.
-     *
-     * @return self
+     * @return void
      */
-    public static function getInstance(): self
+    private function initialize(): void
     {
-        if (null === static::$instance) {
-            static::$instance = new self();
+        if (self::$session === null && isset($_SESSION)) {
+            self::$session = &$_SESSION;
+        } else {
+            self::$session = [];
         }
 
-        return static::$instance;
+        $this->clearEphemeral();
     }
 
     /**
@@ -63,7 +59,7 @@ class Session
      */
     public function has(string $key): bool
     {
-        return array_key_exists($key, $this->session);
+        return array_key_exists($key, self::$session);
     }
 
     /**
@@ -79,7 +75,7 @@ class Session
             return $default;
         }
 
-        return $this->session[$key];
+        return self::$session[$key];
     }
 
     /**
@@ -91,7 +87,7 @@ class Session
      */
     public function set(string $key, $value): self
     {
-        $this->session[$key] = $value;
+        self::$session[$key] = $value;
 
         return $this;
     }
@@ -106,7 +102,7 @@ class Session
     public function remove(string $key): self
     {
         if ($this->has($key)) {
-            unset($this->session[$key]);
+            unset(self::$session[$key]);
         }
 
         return $this;
@@ -149,17 +145,19 @@ class Session
      */
     public function clearEphemeral(): self
     {
-        $ephemeral = [];
-
         //~ Check ephemeral vars
-        if ($this->has(self::EPHEMERAL)) {
-            $ephemeral = $this->get(self::EPHEMERAL);
-            foreach ($ephemeral as $name => &$var) {
-                if (true === $var[self::ACTIVE]) {
-                    $var[self::ACTIVE] = false;
-                } else {
-                    unset($ephemeral[$name]);
-                }
+        if (!$this->has(self::EPHEMERAL)) {
+            $this->set(self::EPHEMERAL, []);
+
+            return $this;
+        }
+
+        $ephemeral = $this->get(self::EPHEMERAL);
+        foreach ($ephemeral as $name => &$var) {
+            if (true === $var[self::ACTIVE]) {
+                $var[self::ACTIVE] = false;
+            } else {
+                unset($ephemeral[$name]);
             }
         }
 
@@ -178,9 +176,11 @@ class Session
      */
     public function setEphemeral(string $name, $value): self
     {
-        $ephemeral                        = $this->get(self::EPHEMERAL);
+        $ephemeral = $this->get(self::EPHEMERAL);
+
         $ephemeral[$name][self::ACTIVE]   = true;
         $ephemeral[$name][self::VARIABLE] = $value;
+
         $this->set(self::EPHEMERAL, $ephemeral);
 
         return $this;

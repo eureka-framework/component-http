@@ -35,7 +35,7 @@ class HttpFactory implements
      */
     public function createResponse(int $code = 200, string $reasonPhrase = ''): HttpMessage\ResponseInterface
     {
-        return new Message\Response($code, [], self::createStream(), '1.1', $reasonPhrase);
+        return new Message\Response($code, [], $this->createStream(), '1.1', $reasonPhrase);
     }
 
     /**
@@ -47,6 +47,10 @@ class HttpFactory implements
      */
     public function createRequest(string $method, $uri): HttpMessage\RequestInterface
     {
+        if (!$uri instanceof HttpMessage\UriInterface) {
+            $uri = $this->createUri(!is_string($uri) ? '' : $uri);
+        }
+
         return new Message\Request($method, $uri);
     }
 
@@ -66,11 +70,11 @@ class HttpFactory implements
     public function createServerRequest(string $method, $uri, array $serverParams = []): HttpMessage\ServerRequestInterface
     {
         if (!$uri instanceof HttpMessage\UriInterface) {
-            $uri = self::createUri(!is_string($uri) ? '' : $uri);
+            $uri = $this->createUri(!is_string($uri) ? '' : $uri);
         }
 
         $headers = function_exists('apache_request_headers') ? apache_request_headers() : [];
-        $body    = self::createStream();
+        $body    = $this->createStream();
         $version = isset($serverParams['SERVER_PROTOCOL']) ? str_replace('HTTP/', '', $serverParams['SERVER_PROTOCOL']) : '1.1';
 
         return (new Message\ServerRequest($method, $uri, $headers, $body, $version, $serverParams))
@@ -170,7 +174,7 @@ class HttpFactory implements
             throw new \InvalidArgumentException();
         }
 
-        return (new Stream($resource));
+        return (new Message\Stream($resource));
     }
 
     /**
@@ -183,7 +187,7 @@ class HttpFactory implements
      */
     public function createStreamFromResource($resource): HttpMessage\StreamInterface
     {
-        return new Stream($resource);
+        return new Message\Stream($resource);
     }
     /**
      * Create a new uploaded file.
@@ -211,7 +215,7 @@ class HttpFactory implements
         string $clientMediaType = null
     ): HttpMessage\UploadedFileInterface {
 
-        return new UploadedFile($stream, $clientFilename, $size, $clientMediaType, $error);
+        return new Message\UploadedFile($stream, $clientFilename, $size, $clientMediaType, $error);
     }
 }
 
