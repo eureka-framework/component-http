@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /*
  * Copyright (c) Romain Cottard
@@ -74,7 +74,7 @@ class Uri implements UriInterface
             $this->setScheme($this->getStringValue($parse['scheme']));
             $this->setUserInfo($this->getStringValue($parse['user']), $this->getStringValue($parse['pass']));
             $this->setHost($this->getStringValue($parse['host']));
-            $this->setPort($this->getStringValue($parse['port']));
+            $this->setPort((int) $this->getStringValue($parse['port']));
             $this->setPath($this->getStringValue($parse['path']));
             $this->setQuery($this->getStringValue($parse['query']));
             $this->setFragment($this->getStringValue($parse['fragment']));
@@ -323,7 +323,7 @@ class Uri implements UriInterface
      *
      * @param string $host The hostname to use with the new instance.
      * @return self A new instance with the specified host.
-     * @throws \InvalidArgumentException for invalid hostnames.
+     * @throws \InvalidArgumentException for invalid hostname.
      */
     public function withHost($host): self
     {
@@ -353,7 +353,7 @@ class Uri implements UriInterface
     public function withPort($port): self
     {
         $instance = clone $this;
-        $instance->setPath($port);
+        $instance->setPort($port);
 
         return $instance;
     }
@@ -524,13 +524,11 @@ class Uri implements UriInterface
     /**
      * Set port
      *
-     * @param  string $port
+     * @param  int|null $port
      * @return self
      */
-    private function setPort(string $port): self
+    private function setPort(?int $port): self
     {
-        $port = (int) $port;
-
         if ($port < 0 || $port > 65535) {
             throw new \InvalidArgumentException('Port must be between 1 and 65535!');
         }

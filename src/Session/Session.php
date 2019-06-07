@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /*
  * Copyright (c) Romain Cottard
@@ -42,10 +42,12 @@ class Session
      */
     private function initialize(): void
     {
-        if (self::$session === null && isset($_SESSION)) {
-            self::$session = &$_SESSION;
-        } else {
-            self::$session = [];
+        if (self::$session === null) {
+            self::$session = []; // default
+
+            if (isset($_SESSION)) {
+                self::$session = &$_SESSION;
+            }
         }
 
         $this->clearEphemeral();

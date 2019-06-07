@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /*
  * Copyright (c) Romain Cottard
@@ -33,7 +33,7 @@ class RequestHandler implements RequestHandlerInterface
      * @param ResponseInterface $response
      * @param MiddlewareInterface[] $middleware
      */
-    public function __construct(ResponseInterface $response, $middleware = [])
+    public function __construct(ResponseInterface $response, array $middleware = [])
     {
         $this->response = $response;
         $this->storage  = new \SplObjectStorage();

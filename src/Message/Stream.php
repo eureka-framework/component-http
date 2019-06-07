@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /*
  * Copyright (c) Romain Cottard
@@ -261,7 +261,7 @@ class Stream implements StreamInterface
 
         if (!$this->isSeekable()) {
             throw new \RuntimeException('Stream is not seekable');
-        } else if (fseek($this->stream, $offset, $whence) === -1) {
+        } elseif (fseek($this->stream, $offset, $whence) === -1) {
             throw new \RuntimeException('Unable to seek to stream position '  . $offset . ' with whence ' . var_export($whence, true));
         }
     }
@@ -392,7 +392,7 @@ class Stream implements StreamInterface
     {
         if (!is_resource($this->stream)) {
             return !empty($key) ? null : [];
-        } else if (empty($key)) {
+        } elseif (empty($key)) {
             return stream_get_meta_data($this->stream);
         }
 

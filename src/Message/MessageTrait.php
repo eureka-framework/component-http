@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /*
  * Copyright (c) Romain Cottard
@@ -9,6 +9,7 @@
 
 namespace Eureka\Component\Http\Message;
 
+use Eureka\Component\Http\HttpFactory;
 use Psr\Http\Message\StreamInterface;
 
 /**
