@@ -133,7 +133,7 @@ class ServerRequest extends Request implements ServerRequestInterface
            }
        }
 
-        $requestBody = $this->getBody()->getContents();
+        $requestBody = (string) $this->getBody()->getContents();
         $parsedBody = !empty($requestBody) ? json_decode($requestBody, true) : [];
         if (!empty($requestBody) && empty($parsedBody)) {
             parse_str($requestBody, $parsedBody);

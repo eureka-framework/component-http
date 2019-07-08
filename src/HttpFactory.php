@@ -74,8 +74,11 @@ class HttpFactory implements
         }
 
         $headers = function_exists('apache_request_headers') ? apache_request_headers() : [];
-        $body    = $this->createStream();
+        $body    = $this->createStream(file_get_contents('php://input'));
         $version = isset($serverParams['SERVER_PROTOCOL']) ? str_replace('HTTP/', '', $serverParams['SERVER_PROTOCOL']) : '1.1';
+
+        //~ rewind body content
+        $body->rewind();
 
         return (new Message\ServerRequest($method, $uri, $headers, $body, $version, $serverParams))
             ->withCookieParams($_COOKIE)
@@ -104,29 +107,29 @@ class HttpFactory implements
 
         //~ Set scheme
         if (isset($_SERVER['HTTPS'])) {
-            $instance->withScheme($_SERVER['HTTPS'] == 'on' ? 'https' : 'http');
+            $instance = $instance->withScheme($_SERVER['HTTPS'] == 'on' ? 'https' : 'http');
         }
 
         //~ Set host
         if (isset($_SERVER['HTTP_HOST'])) {
-            $instance->withHost($_SERVER['HTTP_HOST']);
+            $instance = $instance->withHost($_SERVER['HTTP_HOST']);
         } elseif (isset($_SERVER['SERVER_NAME'])) {
-            $instance->withHost($_SERVER['SERVER_NAME']);
+            $instance = $instance->withHost($_SERVER['SERVER_NAME']);
         }
 
         //~ Set port
         if (isset($_SERVER['SERVER_PORT'])) {
-            $instance->withPort($_SERVER['SERVER_PORT']);
+            $instance = $instance->withPort($_SERVER['SERVER_PORT']);
         }
 
         //~ Set path
         if (isset($_SERVER['REQUEST_URI'])) {
-            $instance->withPath(current(explode('?', $_SERVER['REQUEST_URI'])));
+            $instance = $instance->withPath(current(explode('?', $_SERVER['REQUEST_URI'])));
         }
 
         //~ Set query string
         if (isset($_SERVER['QUERY_STRING'])) {
-            $instance->withQuery($_SERVER['QUERY_STRING']);
+            $instance = $instance->withQuery($_SERVER['QUERY_STRING']);
         }
 
         return $instance;
