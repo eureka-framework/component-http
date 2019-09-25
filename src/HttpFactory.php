@@ -106,9 +106,7 @@ class HttpFactory implements
         $instance = new Message\Uri();
 
         //~ Set scheme
-        if (isset($_SERVER['HTTPS'])) {
-            $instance = $instance->withScheme($_SERVER['HTTPS'] == 'on' ? 'https' : 'http');
-        }
+        $instance = $instance->withScheme($_SERVER['REQUEST_SCHEME'] ?? 'http');
 
         //~ Set host
         if (isset($_SERVER['HTTP_HOST'])) {
