@@ -117,7 +117,7 @@ class HttpFactory implements
 
         //~ Set port
         if (isset($_SERVER['SERVER_PORT'])) {
-            $instance = $instance->withPort($_SERVER['SERVER_PORT']);
+            $instance = $instance->withPort((int) $_SERVER['SERVER_PORT']);
         }
 
         //~ Set path
