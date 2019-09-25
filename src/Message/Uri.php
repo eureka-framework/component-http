@@ -129,7 +129,7 @@ class Uri implements UriInterface
             $authority = $this->userInfo . '@' . $authority;
         }
 
-        if (!empty($this->port) || $this->port != 80) {
+        if (!empty($this->port) && $this->port != 80) {
             $authority .= ':' . $this->port;
         }
 
