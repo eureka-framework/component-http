@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 
 /*
  * Copyright (c) Romain Cottard
@@ -6,6 +6,8 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
+declare(strict_types=1);
 
 namespace Eureka\Component\Http\Server;
 
@@ -21,11 +23,11 @@ use Psr\Http\Server\RequestHandlerInterface;
  */
 class RequestHandler implements RequestHandlerInterface
 {
-    /** @var \SplObjectStorage $storage */
-    private $storage = null;
+    /** @var \SplObjectStorage|null $storage */
+    private ?\SplObjectStorage $storage = null;
 
-    /** @var ResponseInterface $response */
-    private $response = null;
+    /** @var ResponseInterface|null $response */
+    private ?ResponseInterface $response = null;
 
     /**
      * Class constructor.
