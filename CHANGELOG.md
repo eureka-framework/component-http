@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 
 
-## [5.0.0]
+## [5.0.0] - 2020-10-09
 ### Changed
  * Require php 7.4+
  * Tests
@@ -30,7 +30,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
  * Remove deprecated tests
  * Removed PSR-15 for PHP 5.6 implementation
 
-## [3.0.0] - 2020-03-20 - New major version: use PHP 7+
+## [3.0.0] - 2018 - New major version: use PHP 7+
 ### Added
  * Add final PSR-15 / PHP 5.6 implementation
 ### removed
