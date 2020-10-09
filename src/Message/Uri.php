@@ -1,7 +1,7 @@
-<?php
+<?php declare(strict_types=1);
 
-/**
- * Copyright (c) 2010-2017 Romain Cottard
+/*
+ * Copyright (c) Romain Cottard
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -36,50 +36,34 @@ use Psr\Http\Message\UriInterface;
  */
 class Uri implements UriInterface
 {
-    /**
-     * @var string $charList Char list for preg match callback, used in different cases.
-     */
+    /** @var string $charList Char list for preg match callback, used in different cases. */
     private static $charList = 'a-zA-Z0-9_\-\.~!\$&\'\(\)\*\+,;=';
 
-    /**
-     * @var string Uri scheme.
-     */
+    /** @var string Uri scheme. */
     private $scheme = '';
 
-    /**
-     * @var string Uri user info.
-     */
+    /** @var string Uri user info. */
     private $userInfo = '';
 
-    /**
-     * @var string Uri host.
-     */
+    /** @var string Uri host. */
     private $host = '';
 
-    /**
-     * @var int|null Uri port.
-     */
+    /** @var int|null Uri port. */
     private $port = null;
 
-    /**
-     * @var string Uri path.
-     */
+    /** @var string Uri path. */
     private $path = '';
 
-    /**
-     * @var string Uri query string.
-     */
+    /** @var string Uri query string. */
     private $query = '';
 
-    /**
-     * @var string Uri fragment.
-     */
+    /** @var string Uri fragment. */
     private $fragment = '';
 
     /**
      * @param string $uri URI to parse and wrap.
      */
-    public function __construct($uri = '')
+    public function __construct(string $uri = '')
     {
         if (!empty($uri)) {
             $parse = parse_url($uri);
@@ -90,7 +74,7 @@ class Uri implements UriInterface
             $this->setScheme($this->getStringValue($parse['scheme']));
             $this->setUserInfo($this->getStringValue($parse['user']), $this->getStringValue($parse['pass']));
             $this->setHost($this->getStringValue($parse['host']));
-            $this->setPort($this->getStringValue($parse['port']));
+            $this->setPort((int) $this->getStringValue($parse['port']));
             $this->setPath($this->getStringValue($parse['path']));
             $this->setQuery($this->getStringValue($parse['query']));
             $this->setFragment($this->getStringValue($parse['fragment']));
@@ -111,7 +95,7 @@ class Uri implements UriInterface
      * @see https://tools.ietf.org/html/rfc3986#section-3.1
      * @return string The URI scheme.
      */
-    public function getScheme()
+    public function getScheme(): string
     {
         return $this->scheme;
     }
@@ -134,7 +118,7 @@ class Uri implements UriInterface
      * @see https://tools.ietf.org/html/rfc3986#section-3.2
      * @return string The URI authority, in "[user-info@]host[:port]" format.
      */
-    public function getAuthority()
+    public function getAuthority(): string
     {
         if (empty($this->host)) {
             return '';
@@ -145,7 +129,7 @@ class Uri implements UriInterface
             $authority = $this->userInfo . '@' . $authority;
         }
 
-        if (!empty($this->port)) {
+        if (!empty($this->port) && $this->port != 80) {
             $authority .= ':' . $this->port;
         }
 
@@ -167,7 +151,7 @@ class Uri implements UriInterface
      *
      * @return string The URI user information, in "username[:password]" format.
      */
-    public function getUserInfo()
+    public function getUserInfo(): string
     {
         return (string) $this->userInfo;
     }
@@ -183,7 +167,7 @@ class Uri implements UriInterface
      * @see http://tools.ietf.org/html/rfc3986#section-3.2.2
      * @return string The URI host.
      */
-    public function getHost()
+    public function getHost(): string
     {
         return (string) $this->host;
     }
@@ -203,7 +187,7 @@ class Uri implements UriInterface
      *
      * @return null|int The URI port.
      */
-    public function getPort()
+    public function getPort(): ?int
     {
         return $this->port;
     }
@@ -233,7 +217,7 @@ class Uri implements UriInterface
      * @see https://tools.ietf.org/html/rfc3986#section-3.3
      * @return string The URI path.
      */
-    public function getPath()
+    public function getPath(): string
     {
         return (string) $this->path;
     }
@@ -258,7 +242,7 @@ class Uri implements UriInterface
      * @see https://tools.ietf.org/html/rfc3986#section-3.4
      * @return string The URI query string.
      */
-    public function getQuery()
+    public function getQuery(): string
     {
         return $this->query;
     }
@@ -279,7 +263,7 @@ class Uri implements UriInterface
      * @see https://tools.ietf.org/html/rfc3986#section-3.5
      * @return string The URI fragment.
      */
-    public function getFragment()
+    public function getFragment(): string
     {
         return $this->fragment;
     }
@@ -299,7 +283,7 @@ class Uri implements UriInterface
      * @return self A new instance with the specified scheme.
      * @throws \InvalidArgumentException for invalid or unsupported schemes.
      */
-    public function withScheme($scheme)
+    public function withScheme($scheme): self
     {
         $instance = clone $this;
         $instance->setScheme($scheme);
@@ -317,11 +301,11 @@ class Uri implements UriInterface
      * user; an empty string for the user is equivalent to removing user
      * information.
      *
-     * @param string      $user The user name to use for authority.
+     * @param string $user The user name to use for authority.
      * @param null|string $password The password associated with $user.
      * @return self A new instance with the specified user information.
      */
-    public function withUserInfo($user, $password = null)
+    public function withUserInfo($user, $password = null): self
     {
         $instance = clone $this;
         $instance->setUserInfo($user, $password);
@@ -339,9 +323,9 @@ class Uri implements UriInterface
      *
      * @param string $host The hostname to use with the new instance.
      * @return self A new instance with the specified host.
-     * @throws \InvalidArgumentException for invalid hostnames.
+     * @throws \InvalidArgumentException for invalid hostname.
      */
-    public function withHost($host)
+    public function withHost($host): self
     {
         $instance = clone $this;
         $instance->setHost($host);
@@ -366,10 +350,10 @@ class Uri implements UriInterface
      * @return self A new instance with the specified port.
      * @throws \InvalidArgumentException for invalid ports.
      */
-    public function withPort($port)
+    public function withPort($port): self
     {
         $instance = clone $this;
-        $instance->setPath($port);
+        $instance->setPort($port);
 
         return $instance;
     }
@@ -396,7 +380,7 @@ class Uri implements UriInterface
      * @return self A new instance with the specified path.
      * @throws \InvalidArgumentException for invalid paths.
      */
-    public function withPath($path)
+    public function withPath($path): self
     {
         $instance = clone $this;
         $instance->setPath($path);
@@ -419,7 +403,7 @@ class Uri implements UriInterface
      * @return self A new instance with the specified query string.
      * @throws \InvalidArgumentException for invalid query strings.
      */
-    public function withQuery($query)
+    public function withQuery($query): self
     {
         if (substr($query, 0, 1) === '?') {
             $query = substr($query, 1);
@@ -445,7 +429,7 @@ class Uri implements UriInterface
      * @param string $fragment The fragment to use with the new instance.
      * @return self A new instance with the specified fragment.
      */
-    public function withFragment($fragment)
+    public function withFragment($fragment): self
     {
         if (substr($fragment, 0, 1) === '#') {
             $fragment = substr($fragment, 1);
@@ -480,7 +464,7 @@ class Uri implements UriInterface
      * @see http://tools.ietf.org/html/rfc3986#section-4.1
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         $uri = '';
 
@@ -512,52 +496,12 @@ class Uri implements UriInterface
     }
 
     /**
-     * Create new Uri instance from global $_REQUEST data.
-     *
-     * @return static
-     */
-    public static function createFromGlobal()
-    {
-        $instance = new self('');
-
-        //~ Set scheme
-        if (isset($_SERVER['HTTPS'])) {
-            $instance->setScheme($_SERVER['HTTPS'] == 'on' ? 'https' : 'http');
-        }
-
-        //~ Set host
-        if (isset($_SERVER['HTTP_HOST'])) {
-            $instance->setHost($_SERVER['HTTP_HOST']);
-        } elseif (isset($_SERVER['SERVER_NAME'])) {
-            $instance->setHost($_SERVER['SERVER_NAME']);
-        }
-
-        //~ Set port
-        if (isset($_SERVER['SERVER_PORT'])) {
-            $instance->setPort($_SERVER['SERVER_PORT']);
-        }
-
-        //~ Set path
-        if (isset($_SERVER['REQUEST_URI'])) {
-            $instance->setPath(current(explode('?', $_SERVER['REQUEST_URI'])));
-        }
-
-        //~ Set query string
-        if (isset($_SERVER['QUERY_STRING'])) {
-            $instance->setQuery($_SERVER['QUERY_STRING']);
-        }
-
-        return $instance;
-    }
-
-
-    /**
      * Set scheme
      *
      * @param  string $scheme
      * @return self
      */
-    private function setScheme($scheme)
+    private function setScheme(string $scheme): self
     {
         $this->scheme = trim(strtolower($scheme), ':/');
 
@@ -570,7 +514,7 @@ class Uri implements UriInterface
      * @param  string $host
      * @return self
      */
-    private function setHost($host)
+    private function setHost(string $host): self
     {
         $this->host = $host;
 
@@ -580,13 +524,11 @@ class Uri implements UriInterface
     /**
      * Set port
      *
-     * @param  string $port
+     * @param  int|null $port
      * @return self
      */
-    private function setPort($port)
+    private function setPort(?int $port): self
     {
-        $port = (int) $port;
-
         if ($port < 0 || $port > 65535) {
             throw new \InvalidArgumentException('Port must be between 1 and 65535!');
         }
@@ -607,7 +549,7 @@ class Uri implements UriInterface
      * @param  string $pass
      * @return self
      */
-    private function setUserInfo($user, $pass)
+    private function setUserInfo(string $user, string $pass): self
     {
         $this->userInfo = $user . (!empty($pass) ? ':' . $pass : '');
 
@@ -620,9 +562,9 @@ class Uri implements UriInterface
      * @param  string $path
      * @return self
      */
-    private function setPath($path)
+    private function setPath(string $path): self
     {
-        $this->path =  preg_replace_callback(
+        $this->path = preg_replace_callback(
             '/(?:[^' . self::$charList . ':@\/%]+|%(?![A-Fa-f0-9]{2}))/',
             [$this, 'encode'],
             $path
@@ -637,9 +579,9 @@ class Uri implements UriInterface
      * @param  string $query
      * @return self
      */
-    private function setQuery($query)
+    private function setQuery(string $query): self
     {
-        $this->query =  preg_replace_callback(
+        $this->query = preg_replace_callback(
             '/(?:[^' . self::$charList . '%:@\/\?]+|%(?![A-Fa-f0-9]{2}))/',
             [$this, 'encode'],
             $query
@@ -654,7 +596,7 @@ class Uri implements UriInterface
      * @param  string $fragment
      * @return self
      */
-    private function setFragment($fragment)
+    private function setFragment(string $fragment): self
     {
         $this->fragment = preg_replace_callback(
             '/(?:[^' . self::$charList . '%:@\/\?]+|%(?![A-Fa-f0-9]{2}))/',
@@ -671,26 +613,26 @@ class Uri implements UriInterface
      * @param  array $match
      * @return string
      */
-    private function encode(array $match)
+    private function encode(array $match): string
     {
         return rawurlencode($match[0]);
     }
 
-	/**
-	 * Get value as string. If not defined, get default value.
-	 *
-	 * @param  mixed  $var
-	 * @param  string $default
-	 * @return string
-	 */
-    private function getStringValue(&$var, $default = '')
-	{
-		$value = $default;
+    /**
+     * Get value as string. If not defined, get default value.
+     *
+     * @param  mixed $var
+     * @param  string $default
+     * @return string
+     */
+    private function getStringValue(&$var, string $default = ''): string
+    {
+        $value = $default;
 
-		if (isset($var)) {
-			$value = (string) $var;
-		}
+        if (isset($var)) {
+            $value = (string) $var;
+        }
 
-		return $value;
-	}
+        return $value;
+    }
 }

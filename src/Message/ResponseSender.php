@@ -1,7 +1,7 @@
-<?php
+<?php declare(strict_types=1);
 
-/**
- * Copyright (c) 2010-2017 Romain Cottard
+/*
+ * Copyright (c) Romain Cottard
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -18,12 +18,12 @@ use Psr\Http\Message\ResponseInterface;
  */
 class ResponseSender
 {
-    /**
-     * @var ResponseInterface response
-     */
+    /** @var ResponseInterface $response */
     private $response = null;
 
     /**
+     * ResponseSender constructor.
+     *
      * @param ResponseInterface $response
      */
     public function __construct(ResponseInterface $response)
@@ -36,7 +36,7 @@ class ResponseSender
      *
      * @return void
      */
-    public function send()
+    public function send(): void
     {
         $this->writeStatus();
         $this->writeHeaders();
@@ -48,7 +48,7 @@ class ResponseSender
      *
      * @return void
      */
-    private function writeStatus()
+    private function writeStatus(): void
     {
         $string = $this->response->getProtocolVersion() . ' ' . $this->response->getStatusCode() . ' ' . $this->response->getReasonPhrase();
         header($string, true, $this->response->getStatusCode());
@@ -59,7 +59,7 @@ class ResponseSender
      *
      * @return void
      */
-    private function writeHeaders()
+    private function writeHeaders(): void
     {
         $headers = $this->response->getHeaders();
         foreach ($headers as $name => $list) {
@@ -70,7 +70,7 @@ class ResponseSender
     /**
      * @return void
      */
-    private function writeBody()
+    private function writeBody(): void
     {
         echo $this->response->getBody()->getContents();
     }

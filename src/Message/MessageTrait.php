@@ -1,7 +1,7 @@
-<?php
+<?php declare(strict_types=1);
 
-/**
- * Copyright (c) 2010-2017 Romain Cottard
+/*
+ * Copyright (c) Romain Cottard
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -9,7 +9,7 @@
 
 namespace Eureka\Component\Http\Message;
 
-use Psr\Http\Message\MessageInterface;
+use Eureka\Component\Http\HttpFactory;
 use Psr\Http\Message\StreamInterface;
 
 /**
@@ -31,25 +31,17 @@ use Psr\Http\Message\StreamInterface;
  */
 trait MessageTrait
 {
-    /**
-     * @var string[][] $headers an associative array of the message's headers. Each key MUST be a header name, and each value MUST be an array of strings for that header.
-     */
+    /** @var string[][] $headers an associative array of the message's headers. Each key MUST be a header name, and each value MUST be an array of strings for that header. */
     private $headers = [];
 
-    /**
-     * @var string[][] $headers an associative array of the message's headers. Each key MUST be a header name, and each value MUST be an array of strings for that header.
-     */
-    private $headersOriginal = [];
-
-    /**
-     * @var string $protocolVersion HTTP protocol version.
-     */
+    /** @var string $protocolVersion HTTP protocol version. */
     private $protocolVersion = '1.1';
 
-    /**
-     * @var StreamInterface $body StreamInterface instance for body.
-     */
+    /** @var StreamInterface $body StreamInterface instance for body. */
     private $body = null;
+
+    /** @var string[][] $headers an associative array of the message's headers. Each key MUST be a header name, and each value MUST be an array of strings for that header. */
+    protected $headersOriginal = [];
 
     /**
      * Retrieves the HTTP protocol version as a string.
@@ -58,7 +50,7 @@ trait MessageTrait
      *
      * @return string HTTP protocol version.
      */
-    public function getProtocolVersion()
+    public function getProtocolVersion(): string
     {
         return $this->protocolVersion;
     }
@@ -76,9 +68,9 @@ trait MessageTrait
      * @param string $version HTTP protocol version
      * @return static
      */
-    public function withProtocolVersion($version)
+    public function withProtocolVersion($version): self
     {
-        $instance = clone $this;
+        $instance                  = clone $this;
         $instance->protocolVersion = $version;
 
         return $instance;
@@ -109,7 +101,7 @@ trait MessageTrait
      *     Each key MUST be a header name, and each value MUST be an array of
      *     strings for that header.
      */
-    public function getHeaders()
+    public function getHeaders(): array
     {
         return $this->headersOriginal;
     }
@@ -122,7 +114,7 @@ trait MessageTrait
      *     name using a case-insensitive string comparison. Returns false if
      *     no matching header name is found in the message.
      */
-    public function hasHeader($name)
+    public function hasHeader($name): bool
     {
         return isset($this->headers[strtolower($name)]);
     }
@@ -141,7 +133,7 @@ trait MessageTrait
      *    header. If the header does not appear in the message, this method MUST
      *    return an empty array.
      */
-    public function getHeader($name)
+    public function getHeader($name): array
     {
         return ($this->hasHeader($name) ? $this->headers[strtolower($name)] : []);
     }
@@ -165,7 +157,7 @@ trait MessageTrait
      *    concatenated together using a comma. If the header does not appear in
      *    the message, this method MUST return an empty string.
      */
-    public function getHeaderLine($name)
+    public function getHeaderLine($name): string
     {
         return implode(', ', $this->getHeader($name));
     }
@@ -185,7 +177,7 @@ trait MessageTrait
      * @return static
      * @throws \InvalidArgumentException for invalid header names or values.
      */
-    public function withHeader($name, $value)
+    public function withHeader($name, $value): self
     {
         //~ Convert to array
         if (!is_array($value)) {
@@ -197,7 +189,7 @@ trait MessageTrait
             $value[$key] = trim($val);
         }
 
-        $instance = clone $this;
+        $instance                             = clone $this;
         $instance->headers[strtolower($name)] = $value;
         $instance->headersOriginal[$name]     = $value;
 
@@ -220,7 +212,7 @@ trait MessageTrait
      * @return static
      * @throws \InvalidArgumentException for invalid header names or values.
      */
-    public function withAddedHeader($name, $value)
+    public function withAddedHeader($name, $value): self
     {
         $instance = clone $this;
 
@@ -236,8 +228,8 @@ trait MessageTrait
         }
 
         //~ Cleaning values & set
-        foreach ($value as $key => $val) {
-            $val = trim($val);
+        foreach ($value as $val) {
+            $val                                    = trim($val);
             $instance->headers[strtolower($name)][] = $val;
             $instance->headersOriginal[$name][]     = $val;
         }
@@ -257,7 +249,7 @@ trait MessageTrait
      * @param  string $name Case-insensitive header field name to remove.
      * @return static
      */
-    public function withoutHeader($name)
+    public function withoutHeader($name): self
     {
         $instance = clone $this;
 
@@ -274,10 +266,10 @@ trait MessageTrait
      *
      * @return StreamInterface Returns the body as a stream.
      */
-    public function getBody()
+    public function getBody(): StreamInterface
     {
         if (!($this->body instanceof StreamInterface)) {
-            $this->body = new Stream(Stream::createResourceTemp());
+            $this->body = (new HttpFactory())->createStream();
         }
 
         return $this->body;
@@ -296,9 +288,9 @@ trait MessageTrait
      * @return static
      * @throws \InvalidArgumentException When the body is not valid.
      */
-    public function withBody(StreamInterface $body)
+    public function withBody(StreamInterface $body): self
     {
-        $instance = clone $this;
+        $instance       = clone $this;
         $instance->body = $body;
 
         return $instance;
@@ -310,7 +302,7 @@ trait MessageTrait
      * @param  string[][] $headers
      * @return self
      */
-    protected function setHeaders($headers)
+    protected function setHeaders(array $headers): self
     {
         foreach ($headers as $name => $value) {
 
@@ -335,9 +327,9 @@ trait MessageTrait
      * Set Body
      *
      * @param  StreamInterface $body
-     * @return self
+     * @return static
      */
-    protected function setBody(StreamInterface $body = null)
+    protected function setBody(StreamInterface $body = null): self
     {
         $this->body = $body;
 
@@ -348,11 +340,33 @@ trait MessageTrait
      * Set protocol version.
      *
      * @param  string $version Protocol version
-     * @return self
+     * @return static
      */
-    protected function setProtocolVersion($version)
+    protected function setProtocolVersion($version): self
     {
         $this->protocolVersion = $version;
+
+        return $this;
+    }
+
+    /**
+     * @param array $headers
+     * @return static
+     */
+    protected function addHeaders(array $headers): self
+    {
+        $this->headers += $headers;
+
+        return $this;
+    }
+
+    /**
+     * @param array $headers
+     * @return static
+     */
+    protected function addHeadersOriginal(array $headers): self
+    {
+        $this->headersOriginal += $headers;
 
         return $this;
     }

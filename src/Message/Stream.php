@@ -1,7 +1,7 @@
-<?php
+<?php declare(strict_types=1);
 
-/**
- * Copyright (c) 2010-2017 Romain Cottard
+/*
+ * Copyright (c) Romain Cottard
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -23,52 +23,63 @@ use Psr\Http\Message\StreamInterface;
  */
 class Stream implements StreamInterface
 {
-    /**
-     * @var resource $stream Resource for current opened stream.
-     */
+    /** @var resource $stream Resource for current opened stream. */
     private $stream = null;
 
-    /**
-     * @var bool $isReadable If the stream is readable.
-     */
+    /** @var bool $isReadable If the stream is readable. */
     private $isReadable = false;
 
-    /**
-     * @var bool $isReadable If the stream is writable.
-     */
+    /** @var bool $isReadable If the stream is writable. */
     private $isWritable = false;
 
-    /**
-     * @var bool $isReadable If the stream is seekable.
-     */
+    /** @var bool $isReadable If the stream is seekable. */
     private $isSeekable = false;
 
-    /**
-     * @var int|null $size
-     */
+    /** @var int|null $size */
     private $size = null;
 
-    /**
-     * @var string|null $uri Uri if any
-     */
+    /** @var string|null $uri Uri if any */
     private $uri = null;
 
-    /**
-     * @var array $readWriteHash Hash of readable and writable stream types
-     */
+    /** @var array $readWriteHash Hash of readable and writable stream types */
     private static $readWriteHash = [
-        'read' => [
-            'r' => true, 'w+' => true, 'r+' => true, 'x+' => true, 'c+' => true,
-            'rb' => true, 'w+b' => true, 'r+b' => true, 'x+b' => true,
-            'c+b' => true, 'rt' => true, 'w+t' => true, 'r+t' => true,
-            'x+t' => true, 'c+t' => true, 'a+' => true
+        'read'  => [
+            'r'   => true,
+            'w+'  => true,
+            'r+'  => true,
+            'x+'  => true,
+            'c+'  => true,
+            'rb'  => true,
+            'w+b' => true,
+            'r+b' => true,
+            'x+b' => true,
+            'c+b' => true,
+            'rt'  => true,
+            'w+t' => true,
+            'r+t' => true,
+            'x+t' => true,
+            'c+t' => true,
+            'a+'  => true,
         ],
         'write' => [
-            'w' => true, 'w+' => true, 'rw' => true, 'r+' => true, 'x+' => true,
-            'c+' => true, 'wb' => true, 'w+b' => true, 'r+b' => true,
-            'x+b' => true, 'c+b' => true, 'w+t' => true, 'r+t' => true,
-            'x+t' => true, 'c+t' => true, 'a' => true, 'a+' => true
-        ]
+            'w'   => true,
+            'w+'  => true,
+            'rw'  => true,
+            'r+'  => true,
+            'x+'  => true,
+            'c+'  => true,
+            'wb'  => true,
+            'w+b' => true,
+            'r+b' => true,
+            'x+b' => true,
+            'c+b' => true,
+            'w+t' => true,
+            'r+t' => true,
+            'x+t' => true,
+            'c+t' => true,
+            'a'   => true,
+            'a+'  => true,
+        ],
     ];
 
     /**
@@ -116,7 +127,7 @@ class Stream implements StreamInterface
      * @see http://php.net/manual/en/language.oop5.magic.php#object.tostring
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         try {
             $this->seek(0);
@@ -131,7 +142,7 @@ class Stream implements StreamInterface
      *
      * @return void
      */
-    public function close()
+    public function close(): void
     {
         if (is_resource($this->stream)) {
             fclose($this->stream);
@@ -199,7 +210,7 @@ class Stream implements StreamInterface
      * @return int Position of the file pointer
      * @throws \RuntimeException on error.
      */
-    public function tell()
+    public function tell(): int
     {
         $result = ftell($this->stream);
 
@@ -215,7 +226,7 @@ class Stream implements StreamInterface
      *
      * @return bool
      */
-    public function eof()
+    public function eof(): bool
     {
         return !is_resource($this->stream) || feof($this->stream);
     }
@@ -225,7 +236,7 @@ class Stream implements StreamInterface
      *
      * @return bool
      */
-    public function isSeekable()
+    public function isSeekable(): bool
     {
         return $this->isSeekable;
     }
@@ -242,7 +253,7 @@ class Stream implements StreamInterface
      *     SEEK_END: Set position to end-of-stream plus offset.
      * @throws \RuntimeException on failure.
      */
-    public function seek($offset, $whence = SEEK_SET)
+    public function seek($offset, $whence = SEEK_SET): void
     {
         if (!is_resource($this->stream)) {
             throw new \RuntimeException('Stream has no open resource');
@@ -250,7 +261,7 @@ class Stream implements StreamInterface
 
         if (!$this->isSeekable()) {
             throw new \RuntimeException('Stream is not seekable');
-        } else if (fseek($this->stream, $offset, $whence) === -1) {
+        } elseif (fseek($this->stream, $offset, $whence) === -1) {
             throw new \RuntimeException('Unable to seek to stream position '  . $offset . ' with whence ' . var_export($whence, true));
         }
     }
@@ -265,7 +276,7 @@ class Stream implements StreamInterface
      * @see http://www.php.net/manual/en/function.fseek.php
      * @throws \RuntimeException on failure.
      */
-    public function rewind()
+    public function rewind(): void
     {
         $this->seek(0);
     }
@@ -275,7 +286,7 @@ class Stream implements StreamInterface
      *
      * @return bool
      */
-    public function isWritable()
+    public function isWritable(): bool
     {
         return $this->isWritable;
     }
@@ -287,7 +298,7 @@ class Stream implements StreamInterface
      * @return int Returns the number of bytes written to the stream.
      * @throws \RuntimeException on failure.
      */
-    public function write($string)
+    public function write($string): int
     {
         if (!is_resource($this->stream)) {
             throw new \RuntimeException('Cannot write to an empty resource stream');
@@ -313,7 +324,7 @@ class Stream implements StreamInterface
      *
      * @return bool
      */
-    public function isReadable()
+    public function isReadable(): bool
     {
         return $this->isReadable;
     }
@@ -328,7 +339,7 @@ class Stream implements StreamInterface
      *     if no bytes are available.
      * @throws \RuntimeException if an error occurs.
      */
-    public function read($length)
+    public function read($length): string
     {
         if (!is_resource($this->stream)) {
             throw new \RuntimeException('Cannot read from empty resource stream');
@@ -348,7 +359,7 @@ class Stream implements StreamInterface
      * @throws \RuntimeException if unable to read.
      * @throws \RuntimeException if error occurs while reading.
      */
-    public function getContents()
+    public function getContents(): string
     {
         if (!is_resource($this->stream)) {
             throw new \RuntimeException('Cannot read from empty resource stream');
@@ -381,23 +392,12 @@ class Stream implements StreamInterface
     {
         if (!is_resource($this->stream)) {
             return !empty($key) ? null : [];
-        } else if (empty($key)) {
+        } elseif (empty($key)) {
             return stream_get_meta_data($this->stream);
         }
 
         $meta = stream_get_meta_data($this->stream);
 
         return isset($meta[$key]) ? $meta[$key] : null;
-    }
-
-    /**
-     * Create stream from php://temp stream.
-     *
-     * @param  string $mode
-     * @return resource
-     */
-    public static function createResourceTemp($mode = 'r+')
-    {
-        return fopen('php://temp', $mode);
     }
 }

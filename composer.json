@@ -14,13 +14,17 @@
 
   "autoload": {
     "psr-4": {
-      "Eureka\\Component\\Http\\": "./src/Http/"
+      "Eureka\\Component\\Http\\": "./src/"
     }
   },
 
   "require": {
+    "php": ">=7.2.0",
+    "ext-json": "*",
+
     "psr/http-message": "^1.0",
-    "eureka/component-psr": "^1.0",
-    "eureka/interface-bag": "^1.0"
+    "psr/http-factory": "^1.0",
+    "psr/http-server-handler": "^1.0",
+    "psr/http-server-middleware": "^1.0"
   }
 }
