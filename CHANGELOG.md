@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 
+## [5.0.1] - 2020-10-29
+### Changed
+ * Require phpcodesniffer v0.7 for composer 2.0
 
 ## [5.0.0] - 2020-10-09
 ### Changed
