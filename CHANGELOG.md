@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [5.0.1] - 2020-10-29
 ### Changed
  * Require phpcodesniffer v0.7 for composer 2.0
+ * Update github action
+### Added
+ * Sonarcloud config
 
 ## [5.0.0] - 2020-10-09
 ### Changed
