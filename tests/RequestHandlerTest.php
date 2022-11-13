@@ -9,7 +9,7 @@
 
 declare(strict_types=1);
 
-namespace Eureka\Component\Http\Tests\Helper;
+namespace Eureka\Component\Http\Tests;
 
 use Eureka\Component\Http\Server\RequestHandler;
 use PHPUnit\Framework\TestCase;
@@ -44,9 +44,9 @@ class RequestHandlerTest extends TestCase
         $responseMock      = $this->getMockBuilder(ResponseInterface::class)->getMock();
         $serverRequestMock = $this->getMockBuilder(ServerRequestInterface::class)->getMock();
         $middlewareMock    = new class implements MiddlewareInterface {
-            public function process(ServerRequestInterface $serverRequest, RequestHandlerInterface $handler): ResponseInterface
+            public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
             {
-                return $handler->handle($serverRequest);
+                return $handler->handle($request);
             }
         };
 
@@ -67,12 +67,12 @@ class RequestHandlerTest extends TestCase
         $responseMock      = $this->getMockBuilder(ResponseInterface::class)->getMock();
         $serverRequestMock = $this->getMockBuilder(ServerRequestInterface::class)->getMock();
         $middlewareMock    = new class implements MiddlewareInterface {
-            public function process(ServerRequestInterface $serverRequest, RequestHandlerInterface $handler): ResponseInterface
+            public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
             {
-                return $handler->handle($serverRequest);
+                return $handler->handle($request);
             }
         };
-        $nonMiddlewareMock    = new class {
+        $nonMiddlewareMock = new class {
             public function process(ServerRequestInterface $serverRequest, RequestHandlerInterface $handler): ResponseInterface
             {
                 return $handler->handle($serverRequest);

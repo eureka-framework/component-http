@@ -23,11 +23,9 @@ use Psr\Http\Server\RequestHandlerInterface;
  */
 class RequestHandler implements RequestHandlerInterface
 {
-    /** @var \SplObjectStorage|null $storage */
-    private ?\SplObjectStorage $storage = null;
-
-    /** @var ResponseInterface|null $response */
-    private ?ResponseInterface $response = null;
+    /** @var \SplObjectStorage<MiddlewareInterface,null> */
+    private \SplObjectStorage $storage;
+    private ResponseInterface $response;
 
     /**
      * Class constructor.
