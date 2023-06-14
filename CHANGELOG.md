@@ -16,7 +16,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ```
 ----
 
-## [5.1.0] - 2020-10-29
+## [5.2.0] - 2023-06-14
+[5.2.0]: https://github.com/eureka-framework/component-http/compare/5.1.0...5.2.0
+### Added
+- PHPStan config for PHP 8.2 compatibility check
+### Changed
+- Now compatible with PHP 8.2
+- Update Makefile
+
+## [5.1.0] - 2022-10-29
 [5.1.0]: https://github.com/eureka-framework/component-http/compare/5.0.1...5.1.0
 ### Added
  - Add PHPStan + config
