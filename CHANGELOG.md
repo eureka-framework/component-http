@@ -16,6 +16,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ```
 ----
 
+## [5.3.0] - 2024-02-16
+[5.3.0]: https://github.com/eureka-framework/component-http/compare/5.2.0...5.3.0
+### Added
+- PHP 8.3 compatibility
+- PHP-CS-Fixer dependency
+- Composer dependencies check
+- PHPStan bleeding edge + strict rules
+### Changed
+- Better github ci part
+### Removed
+- PHPCS dependency
+
 ## [5.2.0] - 2023-06-14
 [5.2.0]: https://github.com/eureka-framework/component-http/compare/5.1.0...5.2.0
 ### Added
