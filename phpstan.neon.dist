@@ -1,5 +1,12 @@
+includes:
+  - ./vendor/phpstan/phpstan-phpunit/extension.neon
+  - ./vendor/phpstan/phpstan-phpunit/rules.neon
+  - ./vendor/phpstan/phpstan-strict-rules/rules.neon
+  - ./vendor/phpstan/phpstan/conf/bleedingEdge.neon
+
 parameters:
-  phpVersion: 70400 # PHP 7.4 - Current minimal version supported
+  #~ Global conf
+  phpVersion: 70400
   level: max
   paths:
     - ./src
@@ -8,7 +15,14 @@ parameters:
   bootstrapFiles:
     - ./vendor/autoload.php
 
+  #~ Rules
+  treatPhpDocTypesAsCertain: false
+
+  #~ Errors
   ignoreErrors:
     -
         message: '`Parameter #2 \$middleware of class (.+?)RequestHandler constructor expects array.+`'
-        path:    ./tests/RequestHandlerTest.php
+        path:    ./tests/unit/RequestHandlerTest.php
+    -
+        message: '`Call to static method PHPUnit\\Framework\\Assert::assertInstanceOf.+ will always evaluate to true`'
+        path:    ./tests/unit/

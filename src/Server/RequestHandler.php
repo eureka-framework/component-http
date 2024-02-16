@@ -95,7 +95,6 @@ class RequestHandler implements RequestHandlerInterface
      */
     protected function process(ServerRequestInterface $request): ResponseInterface
     {
-        /** @var MiddlewareInterface $middleware */
         $middleware = $this->storage->current();
 
         if (!($middleware instanceof MiddlewareInterface)) {

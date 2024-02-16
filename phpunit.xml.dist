@@ -27,8 +27,8 @@
   </coverage>
 
   <testsuites>
-    <testsuite name="Test suite">
-      <directory>./tests</directory>
+    <testsuite name="unit">
+      <directory>./tests/unit</directory>
     </testsuite>
   </testsuites>
 
