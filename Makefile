@@ -38,7 +38,7 @@ build/reports/phpstan:
 #~ main commands
 deps: composer.json
 	$(call header,Checking Dependencies)
-	@XDEBUG_MODE=off composer-require-checker check
+	@XDEBUG_MODE=off ./vendor/bin/composer-require-checker check
 
 phpcs: vendor/bin/php-cs-fixer build/reports/phpcs
 	$(call header,Checking Code Style)
