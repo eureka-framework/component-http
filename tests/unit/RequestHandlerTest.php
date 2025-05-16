@@ -47,7 +47,7 @@ class RequestHandlerTest extends TestCase
     {
         $responseMock      = $this->createMock(ResponseInterface::class);
         $serverRequestMock = $this->createMock(ServerRequestInterface::class);
-        $middlewareMock    = new class () implements MiddlewareInterface {
+        $middlewareMock    = new class implements MiddlewareInterface {
             public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
             {
                 return $handler->handle($request);
@@ -71,13 +71,13 @@ class RequestHandlerTest extends TestCase
     {
         $responseMock      = $this->createMock(ResponseInterface::class);
         $serverRequestMock = $this->createMock(ServerRequestInterface::class);
-        $middlewareMock    = new class () implements MiddlewareInterface {
+        $middlewareMock    = new class implements MiddlewareInterface {
             public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
             {
                 return $handler->handle($request);
             }
         };
-        $nonMiddlewareMock = new class () {
+        $nonMiddlewareMock = new class {
             public function process(ServerRequestInterface $serverRequest, RequestHandlerInterface $handler): ResponseInterface
             {
                 return $handler->handle($serverRequest);

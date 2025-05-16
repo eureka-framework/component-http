@@ -16,6 +16,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ```
 ----
 
+## [5.4.0] - 2025-05-16
+[5.4.0]: https://github.com/eureka-framework/component-http/compare/5.3.0...5.4.0
+### Added
+- PHP 8.4 compatibility
+### Changed
+- Improve Makefile
+- Improve .github/workflows
+
 ## [5.3.0] - 2024-02-16
 [5.3.0]: https://github.com/eureka-framework/component-http/compare/5.2.0...5.3.0
 ### Added
