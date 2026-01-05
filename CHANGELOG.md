@@ -16,6 +16,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ```
 ----
 
+## [6.0.0] - 2026-01-16
+[6.0.0]: https://github.com/eureka-framework/component-http/compare/5.4.0...6.0.0
+### Added
+- PHP 8.5 compatibility
+### Changed
+- Fix bug with RequestHandler::withMiddleware()
+- Add more tests
+- Replace usage of deprecated attach() & detach() functions
+### Removed
+- Drop support of PHP versions < 8.3
+
+----
+
 ## [5.4.0] - 2025-05-16
 [5.4.0]: https://github.com/eureka-framework/component-http/compare/5.3.0...5.4.0
 ### Added

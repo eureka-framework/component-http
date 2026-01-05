@@ -6,7 +6,7 @@ includes:
 
 parameters:
   #~ Global conf
-  phpVersion: 70400
+  phpVersion: 80300
   level: max
   paths:
     - ./src
@@ -23,6 +23,3 @@ parameters:
     -
         message: '`Parameter #2 \$middleware of class (.+?)RequestHandler constructor expects array.+`'
         path:    ./tests/unit/RequestHandlerTest.php
-    -
-        message: '`Call to static method PHPUnit\\Framework\\Assert::assertInstanceOf.+ will always evaluate to true`'
-        path:    ./tests/unit/

@@ -1,5 +1,7 @@
 .PHONY: validate install update php/deps php/check php/fix php/min-compatibility php/max-compatibility php/phpstan php/analyze php/tests php/test php/testdox ci clean
 
+PHP_MIN_VERSION := "8.3"
+PHP_MAX_VERSION := "8.5"
 COMPOSER_BIN := composer
 define header =
     @if [ -t 1 ]; then printf "\n\e[37m\e[100m  \e[104m $(1) \e[0m\n"; else printf "\n### $(1)\n"; fi
@@ -40,17 +42,17 @@ php/deps: composer.json
 
 php/check: vendor/bin/php-cs-fixer
 	$(call header,Checking Code Style)
-	@PHP_CS_FIXER_IGNORE_ENV=1 ./vendor/bin/php-cs-fixer check -v --diff
+	@XDEBUG_MODE=off ./vendor/bin/php-cs-fixer check
 php/fix: vendor/bin/php-cs-fixer
 	$(call header,Fixing Code Style)
-	@PHP_CS_FIXER_IGNORE_ENV=1 ./vendor/bin/php-cs-fixer fix -v
+	@XDEBUG_MODE=off ./vendor/bin/php-cs-fixer fix -v
 
 php/min-compatibility: vendor/bin/phpstan build/reports/phpstan
-	$(call header,Checking PHP 7.4 compatibility)
+	$(call header,Checking PHP ${PHP_MIN_VERSION} compatibility)
 	@XDEBUG_MODE=off ./vendor/bin/phpstan analyse --configuration=./ci/phpmin-compatibility.neon --error-format=table
 
 php/max-compatibility: vendor/bin/phpstan build/reports/phpstan #ci
-	$(call header,Checking PHP 8.4 compatibility)
+	$(call header,Checking PHP ${PHP_MAX_VERSION} compatibility)
 	@XDEBUG_MODE=off ./vendor/bin/phpstan analyse --configuration=./ci/phpmax-compatibility.neon --error-format=table
 
 php/analyze: vendor/bin/phpstan build/reports/phpstan #manual & ci
@@ -59,7 +61,7 @@ php/analyze: vendor/bin/phpstan build/reports/phpstan #manual & ci
 
 php/tests: vendor/bin/phpunit build/reports/phpunit #ci
 	$(call header,Running Unit Tests)
-	@XDEBUG_MODE=coverage php -dzend_extension=xdebug.so ./vendor/bin/phpunit --testsuite=unit --coverage-clover=./build/reports/phpunit/clover.xml --log-junit=./build/reports/phpunit/unit.xml --coverage-php=./build/reports/phpunit/unit.cov --coverage-html=./build/reports/coverage/ --fail-on-warning
+	@XDEBUG_MODE=coverage php ./vendor/bin/phpunit --testsuite=unit --coverage-clover=./build/reports/phpunit/clover.xml --log-junit=./build/reports/phpunit/unit.xml --coverage-php=./build/reports/phpunit/unit.cov --coverage-html=./build/reports/coverage/ --fail-on-warning
 
 php/test: php/tests
 

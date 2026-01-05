@@ -39,7 +39,7 @@ class RequestHandler implements RequestHandlerInterface
         $this->storage  = new \SplObjectStorage();
 
         foreach ($middleware as $item) {
-            $this->storage->attach($item);
+            $this->storage->offsetSet($item);
         }
 
         $this->storage->rewind();
@@ -69,7 +69,7 @@ class RequestHandler implements RequestHandlerInterface
     public function withMiddleware(MiddlewareInterface $middleware): self
     {
         $handler = clone $this;
-        $handler->storage->detach($middleware);
+        $handler->storage->offsetSet($middleware);
 
         return $handler;
     }
@@ -81,7 +81,7 @@ class RequestHandler implements RequestHandlerInterface
     protected function withoutMiddleware(MiddlewareInterface $middleware): self
     {
         $handler = clone $this;
-        $handler->storage->detach($middleware);
+        $handler->storage->offsetUnset($middleware);
         $handler->storage->rewind();
 
         return $handler;
